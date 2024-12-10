@@ -1,5 +1,5 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, StyleSheet, Pressable, Button } from "react-native";
+import { View, StyleSheet, Pressable, Button } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getMediaType } from "../utils/media";
@@ -7,6 +7,7 @@ import { VideoView } from "expo-video";
 import { useVideo } from "../hooks/useVideo";
 import DisplayImage from "../components/DisplayImage";
 import * as MediaLibrary from "expo-media-library";
+
 export default function ImageScreen() {
   const { imageId } = useLocalSearchParams();
   const fullUri = (FileSystem.documentDirectory || "") + (imageId || "");
@@ -20,7 +21,6 @@ export default function ImageScreen() {
   };
 
   const onSave = async () => {
-    console.log("save to media library");
     if (!permissionResponse?.granted) {
       await requestPermission();
     }
@@ -63,7 +63,6 @@ export default function ImageScreen() {
         <Pressable onPress={onDelete}>
           <MaterialIcons
             onPress={() => {
-              console.warn("Delete");
               onDelete();
             }}
             name="delete"

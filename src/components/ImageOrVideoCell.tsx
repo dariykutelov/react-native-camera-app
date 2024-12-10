@@ -5,7 +5,6 @@ import { VideoView } from "expo-video";
 import { useVideo } from "../hooks/useVideo";
 import { Media } from "../types/Media";
 import DisplayImage from "./DisplayImage";
-import { useEffect } from "react";
 
 export default function ImageOrVideoCell({ item }: { item: Media }) {
   const { player } = useVideo(item.uri);

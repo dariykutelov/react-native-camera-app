@@ -14,4 +14,15 @@ This is a simple React Native camera app built with Expo. It allows you to take 
 - [Expo Video](https://docs.expo.dev/versions/latest/sdk/video/)
 - [Expo Image Picker](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
 - [Expo Media Library](https://docs.expo.dev/versions/latest/sdk/media-library/)
-- [Expo Document Directory](https://docs.expo.dev/versions/latest/sdk/document-directory/)
+- [Expo FileSystem](https://docs.expo.dev/versions/latest/sdk/filesystem/)
+
+* Note:
+  There is camepa implementaton with depreciated "expo-av". [check commit "with expo-av"](https://github.com/dariykutelov/react-native-camera-app/tree/5ecd9184b58f0cade83bfe8b5610cac4e5f519ca)
+
+## App Screenshots
+
+![Home Screen](./assets/screenshots/home.png)
+![Camera View](./assets/screenshots/camera.png)
+![Detail View](./assets/screenshots/detail.png)
+![Add Media](./assets/screenshots/add-media-1.png)
+![Add Media](./assets/screenshots/add-media-2.png)

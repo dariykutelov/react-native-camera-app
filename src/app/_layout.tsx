@@ -1,13 +1,13 @@
 import { Stack } from "expo-router";
+import { CameraProvider } from "../context/CameraProvider";
 
-export default function RootLayout() {
+export default function Layout() {
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{ title: "Home", headerTintColor: "royalblue" }}
-      />
-      <Stack.Screen name="camera" options={{ headerShown: false }} />
-    </Stack>
+    <CameraProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ title: "Gallery" }} />
+        <Stack.Screen name="camera" options={{ title: "Camera" }} />
+      </Stack>
+    </CameraProvider>
   );
 }

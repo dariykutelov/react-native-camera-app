@@ -1,19 +1,30 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, StyleSheet, Pressable } from "react-native";
+import { View, Image, StyleSheet, Pressable, Button } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getMediaType } from "../utils/media";
-import Video from "expo-av/build/Video";
-import { ResizeMode } from "expo-av/build/Video.types";
-
+import { VideoView } from "expo-video";
+import { useVideo } from "../hooks/useVideo";
+import DisplayImage from "../components/DisplayImage";
+import * as MediaLibrary from "expo-media-library";
 export default function ImageScreen() {
   const { imageId } = useLocalSearchParams();
   const fullUri = (FileSystem.documentDirectory || "") + (imageId || "");
   const mediaType = getMediaType(fullUri);
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+  const { player, isPlaying, togglePlay } = useVideo(fullUri);
 
   const onDelete = async () => {
     await FileSystem.deleteAsync(fullUri);
     router.back();
+  };
+
+  const onSave = async () => {
+    console.log("save to media library");
+    if (!permissionResponse?.granted) {
+      await requestPermission();
+    }
+    await MediaLibrary.createAssetAsync(fullUri);
   };
 
   return (
@@ -24,7 +35,7 @@ export default function ImageScreen() {
           headerRight: () => (
             <View style={{ gap: 10, flexDirection: "row" }}>
               <MaterialIcons
-                onPress={() => {}}
+                onPress={onSave}
                 name="save"
                 size={26}
                 color="dimgray"
@@ -34,19 +45,16 @@ export default function ImageScreen() {
         }}
       />
       {mediaType === "image" ? (
-        <Image
-          source={{ uri: fullUri }}
-          resizeMode="cover"
-          style={styles.image}
+        <DisplayImage
+          item={{ name: imageId as string, uri: fullUri, type: mediaType }}
         />
       ) : (
-        <Video
-          source={{ uri: fullUri }}
-          style={styles.image}
-          shouldPlay={true}
-          isLooping={true}
-          resizeMode={ResizeMode.COVER}
-          useNativeControls={true}
+        <VideoView
+          style={styles.video}
+          player={player}
+          allowsFullscreen
+          allowsPictureInPicture
+          contentFit="cover"
         />
       )}
       <View style={styles.footer}>
@@ -61,6 +69,9 @@ export default function ImageScreen() {
             color="crimson"
           />
         </Pressable>
+        {mediaType === "video" && (
+          <Button title={isPlaying ? "Pause" : "Play"} onPress={togglePlay} />
+        )}
       </View>
     </View>
   );
@@ -70,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
+  video: {
     width: "100%",
     height: "100%",
   },

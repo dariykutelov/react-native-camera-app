@@ -1,18 +1,13 @@
+import { useCallback, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
 import { Link, useFocusEffect } from "expo-router";
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Pressable,
-} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
-import { useCallback, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+
+import ImageOrVideoCell from "../components/ImageOrVideoCell";
 import { getMediaType, MediaType } from "../utils/media";
-import Video from "expo-av/build/Video";
-import { ResizeMode } from "expo-av/build/Video.types";
+import { saveFileToDocumentDirectory } from "../utils/documentDirectory";
 
 type Media = {
   name: string;
@@ -45,6 +40,29 @@ export default function HomeScreen() {
     );
   };
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (result.canceled || !result.assets) return;
+    const fileName = result.assets[0].uri.split("/").pop() || "";
+    const newImage: Media = {
+      name: fileName,
+      uri: result.assets[0].uri,
+      type: getMediaType(result.assets[0].uri),
+    };
+    console.log(newImage);
+    setImages((prev) => [...prev, newImage]);
+    await saveFileToDocumentDirectory(newImage.uri);
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -52,40 +70,21 @@ export default function HomeScreen() {
         numColumns={3}
         contentContainerStyle={{ gap: 1 }}
         columnWrapperStyle={{ gap: 1 }}
-        style={{ padding: 5 }}
+        style={{ padding: 4 }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <Link href={`/${item.name}`} asChild>
-            <Pressable style={styles.imageContainer}>
-              {item.type === "image" ? (
-                <Image source={{ uri: item.uri }} style={styles.image} />
-              ) : (
-                <>
-                  <Video
-                    source={{ uri: item.uri }}
-                    style={styles.image}
-                    shouldPlay={true}
-                    isLooping={true}
-                    resizeMode={ResizeMode.COVER}
-                    positionMillis={100}
-                  />
-                  <MaterialIcons
-                    name="play-circle"
-                    size={30}
-                    color="white"
-                    style={{ position: "absolute", top: 4, left: 4 }}
-                  />
-                </>
-              )}
-            </Pressable>
-          </Link>
-        )}
+        renderItem={({ item }) => <ImageOrVideoCell item={item} />}
       />
-      <Link href="/camera" asChild>
-        <TouchableOpacity style={styles.cameraIcon}>
-          <MaterialIcons name="photo-camera" size={30} color="white" />
+
+      <View style={styles.cameraIconContainer}>
+        <TouchableOpacity style={styles.cameraIcon} onPress={pickImage}>
+          <MaterialIcons name="insert-photo" size={28} color="white" />
         </TouchableOpacity>
-      </Link>
+        <Link href="/camera" asChild>
+          <TouchableOpacity style={styles.cameraIcon}>
+            <MaterialIcons name="photo-camera" size={28} color="white" />
+          </TouchableOpacity>
+        </Link>
+      </View>
     </View>
   );
 }
@@ -96,18 +95,13 @@ const styles = StyleSheet.create({
   },
   cameraIcon: {
     backgroundColor: "royalblue",
-    borderRadius: 50,
-    padding: 15,
+    borderRadius: 52,
+    padding: 16,
+  },
+  cameraIconContainer: {
     position: "absolute",
-    bottom: 10,
-    right: 10,
-  },
-  imageContainer: {
-    flex: 1,
-    maxWidth: "33.33%",
-  },
-  image: {
-    aspectRatio: 3 / 4,
-    borderRadius: 5,
+    bottom: 28,
+    right: 20,
+    gap: 10,
   },
 });

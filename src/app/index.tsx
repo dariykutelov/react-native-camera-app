@@ -49,8 +49,6 @@ export default function HomeScreen() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (result.canceled || !result.assets) return;
     const fileName = result.assets[0].uri.split("/").pop() || "";
     const newImage: Media = {
@@ -58,7 +56,6 @@ export default function HomeScreen() {
       uri: result.assets[0].uri,
       type: getMediaType(result.assets[0].uri),
     };
-    console.log(newImage);
     setImages((prev) => [...prev, newImage]);
     await saveFileToDocumentDirectory(newImage.uri);
   };

@@ -21,8 +21,13 @@ This is a simple React Native camera app built with Expo. It allows you to take 
 
 ## App Screenshots
 
-![Home Screen](./assets/screenshots/home.png)
-![Camera View](./assets/screenshots/camera.png)
-![Detail View](./assets/screenshots/detail.png)
-![Add Media](./assets/screenshots/add-media-1.png)
-![Add Media](./assets/screenshots/add-media-2.png)
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+  <img src="./assets/screenshots/home.png" width="32%" />
+  <img src="./assets/screenshots/camera.png" width="32%" />
+  <img src="./assets/screenshots/detail.png" width="32%" />
+</div>
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+  <img src="./assets/screenshots/add-media-1.png" width="32%" />
+  <img src="./assets/screenshots/add-media-2.png" width="32%" />
+  <div width="32%"/>
+</div>

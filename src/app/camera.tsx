@@ -10,7 +10,6 @@ import { View, ActivityIndicator, StyleSheet } from "react-native";
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const { picture, video } = useCamera();
-  console.log("picture", picture);
 
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
@@ -22,10 +21,7 @@ export default function CameraScreen() {
     return <ActivityIndicator />;
   }
 
-  console.log("Camera Screen State:", { picture, video });
-
   if (picture || video) {
-    console.log("Displaying Media");
     return <DisplayMedia />;
   }
 

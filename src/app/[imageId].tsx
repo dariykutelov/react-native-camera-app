@@ -25,6 +25,8 @@ export default function ImageScreen() {
       await requestPermission();
     }
     await MediaLibrary.createAssetAsync(fullUri);
+
+    alert("Media saved successfully!");
   };
 
   return (
